@@ -41,42 +41,49 @@ func (sql *SelectSQL) clone() *SelectSQL {
 }
 
 func (sql *SelectSQL) Select(fields string) *SelectSQL {
+	sql = sql.clone()
 	sql.fields = fields
-	return sql.clone()
+	return sql
 }
 
 func (sql *SelectSQL) From(table string) *SelectSQL {
+	sql = sql.clone()
 	sql.table = table
-	return sql.clone()
+	return sql
 }
 
 func (sql *SelectSQL) Where(cond string, marks ...interface{}) *SelectSQL {
+	sql = sql.clone()
 	sql.conds = append(sql.conds, cond)
 	sql.marks = append(sql.marks, marks...)
-	return sql.clone()
+	return sql
 }
 
 func (sql *SelectSQL) And(cond string, marks ...interface{}) *SelectSQL {
+	sql = sql.clone()
 	sql.conds = append(sql.conds, "AND", cond)
 	sql.marks = append(sql.marks, marks...)
-	return sql.clone()
+	return sql
 }
 
 func (sql *SelectSQL) Or(cond string, marks ...interface{}) *SelectSQL {
+	sql = sql.clone()
 	sql.conds = append(sql.conds, "OR", cond)
 	sql.marks = append(sql.marks, marks...)
-	return sql.clone()
+	return sql
 }
 
 func (sql *SelectSQL) OrderBy(order string) *SelectSQL {
+	sql = sql.clone()
 	sql.order = order
-	return sql.clone()
+	return sql
 }
 
 func (sql *SelectSQL) Limit(offset, limit int) *SelectSQL {
+	sql = sql.clone()
 	sql.offset = offset
 	sql.limit = limit
-	return sql.clone()
+	return sql
 }
 
 /*

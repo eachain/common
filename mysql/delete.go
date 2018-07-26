@@ -20,36 +20,42 @@ func (sql *DeleteSQL) clone() *DeleteSQL {
 }
 
 func (sql *DeleteSQL) From(table string) *DeleteSQL {
+	sql = sql.clone()
 	sql.table = table
-	return sql.clone()
+	return sql
 }
 
 func (sql *DeleteSQL) Where(cond string, marks ...interface{}) *DeleteSQL {
+	sql = sql.clone()
 	sql.conds = append(sql.conds, cond)
 	sql.marks = append(sql.marks, marks...)
-	return sql.clone()
+	return sql
 }
 
 func (sql *DeleteSQL) And(cond string, marks ...interface{}) *DeleteSQL {
+	sql = sql.clone()
 	sql.conds = append(sql.conds, "AND", cond)
 	sql.marks = append(sql.marks, marks...)
-	return sql.clone()
+	return sql
 }
 
 func (sql *DeleteSQL) Or(cond string, marks ...interface{}) *DeleteSQL {
+	sql = sql.clone()
 	sql.conds = append(sql.conds, "OR", cond)
 	sql.marks = append(sql.marks, marks...)
-	return sql.clone()
+	return sql
 }
 
 func (sql *DeleteSQL) OrderBy(order string) *DeleteSQL {
+	sql = sql.clone()
 	sql.order = order
-	return sql.clone()
+	return sql
 }
 
 func (sql *DeleteSQL) Limit(limit int) *DeleteSQL {
+	sql = sql.clone()
 	sql.limit = limit
-	return sql.clone()
+	return sql
 }
 
 func (sql *DeleteSQL) String() string {

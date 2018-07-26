@@ -19,32 +19,37 @@ func (sql *UpdateSQL) clone() *UpdateSQL {
 }
 
 func (sql *UpdateSQL) Update(table string) *UpdateSQL {
+	sql = sql.clone()
 	sql.table = table
-	return sql.clone()
+	return sql
 }
 
 func (sql *UpdateSQL) Set(field string, val interface{}) *UpdateSQL {
+	sql = sql.clone()
 	sql.sets = append(sql.sets, field)
 	sql.setMarks = append(sql.setMarks, val)
-	return sql.clone()
+	return sql
 }
 
 func (sql *UpdateSQL) Where(cond string, marks ...interface{}) *UpdateSQL {
+	sql = sql.clone()
 	sql.conds = append(sql.conds, cond)
 	sql.condMarks = append(sql.condMarks, marks...)
-	return sql.clone()
+	return sql
 }
 
 func (sql *UpdateSQL) And(cond string, marks ...interface{}) *UpdateSQL {
+	sql = sql.clone()
 	sql.conds = append(sql.conds, "AND", cond)
 	sql.condMarks = append(sql.condMarks, marks...)
-	return sql.clone()
+	return sql
 }
 
 func (sql *UpdateSQL) Or(cond string, marks ...interface{}) *UpdateSQL {
+	sql = sql.clone()
 	sql.conds = append(sql.conds, "OR", cond)
 	sql.condMarks = append(sql.condMarks, marks...)
-	return sql.clone()
+	return sql
 }
 
 func (sql *UpdateSQL) String() string {
