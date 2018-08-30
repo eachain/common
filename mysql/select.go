@@ -121,7 +121,7 @@ func (sql *SelectSQL) Marks() []interface{} {
 // Row 用于只返回一条记录的sql语句。dst应该传structure.
 func (sql *SelectSQL) Row(biz string, dst interface{}) error {
 	names, fields := AllFields(dst)
-	if sql.fields == "" {
+	if fields := strings.TrimSpace(sql.fields); fields == "" || fields == "*" {
 		sql = sql.Select(names)
 	}
 	return queryRow(biz, sql.String(), sql.marks, fields)
@@ -150,7 +150,7 @@ Rows 用于返回多条记录。将记录写入dst。dst应该是个 slice of st
 	}
 */
 func (sql *SelectSQL) Rows(biz string, dst interface{}) error {
-	if sql.fields == "" {
+	if fields := strings.TrimSpace(sql.fields); fields == "" || fields == "*" {
 		sql = sql.Select(selectFieldNames(dst))
 	}
 	return queryRows(biz, sql.String(), sql.marks, dst)
