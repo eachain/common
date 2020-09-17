@@ -46,6 +46,10 @@ func (tc TypeConverter) Add(old, new interface{}) {
 	}
 }
 
+func (tc TypeConverter) Del(t interface{}) {
+	delete(tc, reflect.TypeOf(t))
+}
+
 func (tc TypeConverter) Convert(x interface{}) interface{} {
 	v := reflect.ValueOf(x)
 	t, ok := tc[v.Type()]
