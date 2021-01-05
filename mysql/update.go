@@ -24,10 +24,10 @@ func (sql *UpdateSQL) Update(table string) *UpdateSQL {
 	return sql
 }
 
-func (sql *UpdateSQL) Set(field string, val interface{}) *UpdateSQL {
+func (sql *UpdateSQL) Set(field string, val ...interface{}) *UpdateSQL {
 	sql = sql.clone()
 	sql.sets = append(sql.sets, field)
-	sql.setMarks = append(sql.setMarks, val)
+	sql.setMarks = append(sql.setMarks, val...)
 	return sql
 }
 
@@ -56,7 +56,7 @@ func (sql *UpdateSQL) String() string {
 	query := "UPDATE `" + sql.table + "` SET "
 	sets := make([]string, 0, len(sql.sets))
 	for _, set := range sql.sets {
-		if strings.Contains(set, "=") &&
+		if strings.Contains(set, "=") ||
 			strings.Contains(set, "?") {
 			sets = append(sets, set)
 		} else {
