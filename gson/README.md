@@ -7,7 +7,7 @@ gson
 
 ## 目标：
 
-简单易懂好用的json解析库。（**只用于解析，不用于编码。**）
+简单易懂好用的json解析库。
 
 
 
@@ -28,7 +28,7 @@ gson
 JSON对象结构：
 
    ```go
-   type JSON struct {
+   type GSON struct {
      // contains filtered or unexported fields
    }
    ```
@@ -51,18 +51,10 @@ JSON对象结构：
    println(js.Key("a").Int())
    ```
 
-3. FromReader
-
-   ```go
-   r := strings.NewReader(`{"a":123}`)
-   js := gson.FromReader(r)
-   println(js.Key("a").Int())
-   ```
-
 4. json.Unmarshal
 
    ```go
-   var js gson.JSON
+   var js gson.GSON
    json.Unmarshal([]byte(`{"a":123}`), &js)
    println(js.Key("a").Int())
    ```
@@ -71,7 +63,7 @@ JSON对象结构：
 
 ### 原则说明
 
-**本库所有函数、方法返回的`*JSON`对象均不为`nil`，方便链式操作。如果有错误信息，可通过`(*JSON).Err()`得到。**
+**本库所有函数、方法返回的`JSON`对象均不为`nil`，方便链式操作。如果有错误信息，可通过`(JSON).Err()`得到。**
 
 
 
@@ -129,39 +121,18 @@ JSON对象结构：
 
 ### 数值操作
 
-- 支持取值`string`、`int`、`bool`(***暂不支持`float`类型，可通过`Value()`方法解析***)。示例：
+- 支持取值`string`、`int`、`float`、`bool`。示例：
 
    ```go
    s := `{"a":1}`
    js := gson.FromString(s).Key("a")
    println(js.Str()) // Output: 1
    println(js.Int()) // Output: 1
+   println(js.Float()) // Output: 1
    println(js.Bool()) // Output: true
    ```
 
-- `TryStr`、`TryInt`、`TryBool`取值时同时返回错误信息。
-
-   ```go
-   s := `{"a":"xyz"}`
-   js := gson.FromString(s).Key("a")
-   fmt.Println(js.TryStr())
-   fmt.Println(js.TryInt())
-   fmt.Println(js.TryBool())
-   // Output:
-   // xyz <nil>
-   // 0 gson: path 'object.a' expected type: number, error: json: invalid number literal, trying to unmarshal "\"xyz\"" into Number
-   // false gson: path 'object.a' expected type: bool, error: strconv.ParseBool: parsing "xyz": invalid syntax
-   ```
-
-- `Value`可用于自定义解析，也可用于解析`float`值，示例：
-
-   ```go
-   var f float64
-   gson.FromString(`3.14`).Value(&f)
-   println(f) // Output: +3.140000e+000
-   ```
-
-- **trick操作：`(*JSON).Str()`**
+- **trick操作：`(*GSON).Str()`**
 
 该方法不止可以解析`string`类型的值，还可以将原`json`串返回，使用时应注意，示例：
 
@@ -183,6 +154,11 @@ case gson.TypObject:
 case gson.TypList:
 case gson.TypString:
 case gson.TypNumber:
+	if js.IsInt() {
+		js.Int()
+	} else {
+		js.Float()
+	}
 case gson.TypBool:
 default:
 }
@@ -224,28 +200,37 @@ default:
 错误类型有以下几种，返回错误详细信息：
 
 ```go
-type WrappedError struct {
-    Path     string   // 请求路径
-    Expected GsonType // 期望类型
-    Err      error    // 具体错误信息
-}
-
-type IndexOutOfRangeError struct {
-    Path  string
-    Index int // 请求index
-    Range int // index允许范围
-}
-
-type KeyNotFoundError struct {
+type KeyNotFoundErr struct {
+    Key  string
     Path string
-    Key  string   // 请求key
-    Keys []string // 所有key列表
 }
 
-type UnmarshalTypeError struct {
-    Path     string
-    Expected GsonType // 期望解析类型
-    Real     GsonType // 实际类型
+type TypOpErr struct {
+	Op   string
+	Typ  Type
+	Path string
 }
 ```
+
+
+### 修改
+
+```go
+js := gson.FromBytes(nil)
+js.Get("a").Set("123")
+println(js.Str()) // Output: {"a":"123"}
+```
+
+```go
+js := gson.FromString(`{"a":123}`)
+js.Get("a").Set(456)
+println(js.Str()) // Output: {"a":456}
+```
+
+```go
+js := gson.FromString(`{"a":1,"b":"2"}`)
+js.Get("a").Remove()
+println(js.Str()) // Output: {"b":"2"}
+```
+
 
