@@ -95,7 +95,8 @@ String 返回sql语句，需要配合Marks一起用。用法：
 	_ = row
 */
 func (sql *SelectSQL) String() string {
-	query := "SELECT " + sql.fields + " FROM `" + sql.table + "`"
+	// query := "SELECT " + sql.fields + " FROM `" + sql.table + "`"
+	query := "SELECT " + sql.fields + " FROM " + sql.table
 	if len(sql.conds) > 0 {
 		query += " WHERE "
 		query += strings.Join(sql.conds, " ")
