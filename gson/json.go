@@ -363,6 +363,11 @@ func (g *GSON) Remove() {
 	g.p = nil
 }
 
+// usage: g.Index(100).Exists()
+func (g *GSON) Exists() bool {
+	return len(g.b) == 0
+}
+
 func (g *GSON) MarshalJSON() ([]byte, error) {
 	if !g.u {
 		b := make([]byte, len(g.b))
